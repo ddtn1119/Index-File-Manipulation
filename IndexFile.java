@@ -20,19 +20,19 @@ public class IndexFile {
 
     // method to create index file
     public void createIndex() throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(dataFile))) {
+        indexFileMap.clear();
+        try (RandomAccessFile raf = new RandomAccessFile(dataFile, "r")) {
+            long position;
             String line;
-            int position = 0;
-            while ((line = reader.readLine()) != null) {
+            while ((position = raf.getFilePointer()) != -1 && (line = raf.readLine()) != null) {
                 String[] parts = line.split(",", 2);
                 if (parts.length == 2) {
-                    indexFileMap.put(parts[0], position);
+                    indexFileMap.put(parts[0], (int) position);
                 }
-                position += line.length() + 1;
             }
         }
         saveIndex();
-    }
+    }    
 
     // method to save index file
     private void saveIndex() throws IOException {
@@ -42,27 +42,26 @@ public class IndexFile {
     }
 
     // method to load index file
+    @SuppressWarnings("unchecked")
     public void loadIndex() throws IOException {
-        indexFileMap.clear();
-        try (BufferedReader reader = new BufferedReader(new FileReader(indexFile))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(", ", 2);
-                if (parts.length == 2) {
-                    indexFileMap.put(parts[0], Integer.parseInt(parts[1]));
-                }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(indexFile))) {
+            try {
+                indexFileMap = (Map<String, Integer>) ois.readObject();
+            } 
+            catch (ClassNotFoundException e) {
+                throw new IOException("Class not found while reading index file", e);
             }
         }
     }
 
     // method to insert record
     public void insertRecord(String key, String value) throws IOException {
-         try (FileWriter writer = new FileWriter(dataFile, true);
-             BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(dataFile, true))) {
             bufferedWriter.write(key + "," + value);
             bufferedWriter.newLine();
         }
-        createIndex();
+        createIndex();   // rebuild index
+        loadIndex();     // load it into memory
     }
 
     // method to search record
@@ -106,7 +105,7 @@ public class IndexFile {
             record = indexFile.searchRecord("5");
             System.out.println("Found record: " + record);
 
-            record = indexFile.searchRecord("6");
+            record = indexFile.searchRecord("3");
             System.out.println("Found record: " + record);
 
         } 
