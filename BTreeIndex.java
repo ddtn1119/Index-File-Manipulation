@@ -26,7 +26,7 @@ public class BTreeIndex {
         } 
         else {
             if (!file.exists()) {
-                throw new IOException("Index file does not exist.");
+                throw new IOException("Index file does not exist. Check the name of your index file and try again.");
             } 
             this.raf = new RandomAccessFile(file, "rw");
             loadHeader();
@@ -285,7 +285,7 @@ public class BTreeIndex {
     public void extract(String outputCsvFile) throws IOException {
         File outFile = new File(outputCsvFile);
         if (outFile.exists()) {
-            throw new IOException("Output file already exists.");
+            throw new IOException("Output file already exists. Please create a new file.");
         }
     
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outFile))) {
