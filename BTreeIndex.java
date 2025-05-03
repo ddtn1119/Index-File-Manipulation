@@ -76,19 +76,21 @@ public class BTreeIndex {
         raf.write(bb.array());
     }
 
+    // methods to allocate, save, and load nodes
     private BTreeNode allocateNode() {
         BTreeNode btnode = new BTreeNode(nextBlockId++);
         return btnode;
     }
 
-    private void saveNode(BTreeNode node) throws IOException {
-        node.writeNode(raf);
+    private void saveNode(BTreeNode btnode) throws IOException {
+        btnode.writeNode(raf);
     }
     
     private BTreeNode loadNode(long blockId) throws IOException {
         return BTreeNode.readNode(raf, blockId);
     }    
 
+    // method to insert a new pair of key and value to the b-tree
     public void insert(long key, long value) throws IOException {
         if (rootBlockId == 0) {
             BTreeNode root = allocateNode();
@@ -125,6 +127,7 @@ public class BTreeIndex {
         }
     }
 
+    // method to insert the node to a b-tree even if it is non-full.
     private BTreeNode insertNonFull(BTreeNode node, long key, long value) throws IOException {
         int i = node.numKeys - 1;
     
@@ -138,7 +141,8 @@ public class BTreeIndex {
             node.values[i + 1] = value;
             node.numKeys++;
             return null;
-        } else {
+        } 
+        else {
             // find child to descend
             while (i >= 0 && key < node.keys[i]) {
                 i--;
@@ -157,6 +161,7 @@ public class BTreeIndex {
         }
     }
     
+    // method to split the child
     private BTreeNode splitChild(BTreeNode parent, int index, BTreeNode fullChild) throws IOException {
         BTreeNode newChild = allocateNode();
         newChild.parentId = parent.blockId;
@@ -194,11 +199,13 @@ public class BTreeIndex {
         return newChild;
     }    
     
+    // method to search for key in a b-tree
     public long search(long key) throws IOException {
         if (rootBlockId == 0) return -1;
         return searchRecursive(rootBlockId, key);
     }
     
+    // helper method to search for keys in a b-tree recursively
     private long searchRecursive(long blockId, long key) throws IOException {
         BTreeNode node = loadNode(blockId);
     
@@ -260,6 +267,7 @@ public class BTreeIndex {
         printRecursive(rootBlockId);
     }
     
+    // helper method for printing the b-tree recursively
     private void printRecursive(long blockId) throws IOException {
         BTreeNode node = loadNode(blockId);
         for (int i = 0; i < node.numKeys; i++) {
@@ -285,6 +293,7 @@ public class BTreeIndex {
         }
     }
     
+    // helper method for extracting CSV file recursively
     private void extractRecursive(long blockId, BufferedWriter writer) throws IOException {
         if (blockId == 0) return;
         BTreeNode node = loadNode(blockId);
@@ -300,4 +309,3 @@ public class BTreeIndex {
         }
     }    
 }
-

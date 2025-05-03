@@ -15,39 +15,41 @@ public class project3 {
 
         try {
             switch (command) { // list of possible user commands
-                case "create":
+                case "create": // create a new b-tree index file
                     BTreeIndex.create(indexFilename);
                     break;
-                case "insert":
+                case "insert": // insert a new pair of key & value
                     long key = Long.parseLong(args[2]);
                     long value = Long.parseLong(args[3]);
                     BTreeIndex index = new BTreeIndex(indexFilename, false);
                     index.insert(key, value);
                     break;
-                case "search":
+                case "search": // search for a key
                     key = Long.parseLong(args[2]);
                     index = new BTreeIndex(indexFilename, false);
                     Long foundValue = index.search(key);
-                    if (foundValue != -1)
+                    if (foundValue != -1) {
                         System.out.println(key + "," + foundValue);
-                    else
-                        System.out.println("Key not found.");
+                    }
+                    else {
+                        System.out.println("Error: Key not found.");
+                    }
                     break;
-                case "load":
+                case "load": // load the CSV file
                     String csvFile = args[2];
                     BTreeIndex.load(indexFilename, csvFile);
                     break;
-                case "print":
+                case "print": // print the result of b-tree
                     index = new BTreeIndex(indexFilename, false);
                     index.print();
                     break;
-                case "extract":
+                case "extract": // extract to output CSV file
                     String outputFile = args[2];
                     index = new BTreeIndex(indexFilename, false);
                     index.extract(outputFile);
                     break;
-                default:
-                    System.err.println("Invalid command.");
+                default: // error by default
+                    System.err.println("Error: invalid command.");
             }
         } 
         catch (Exception e) {

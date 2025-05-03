@@ -13,6 +13,7 @@ public class BTreeNode {
     public static final int MAX_KEYS = 2 * DEGREE - 1;
     public static final int MAX_CHILDREN = 2 * DEGREE;
 
+    // define important data
     public long blockId, parentId;
     public int numKeys;
     public long[] keys = new long[MAX_KEYS];
