@@ -26,7 +26,7 @@ public class BTreeIndex {
         } 
         else {
             if (!file.exists()) {
-                throw new IOException("Index file does not exist. Check the name of your index file and try again.");
+                throw new IOException("Index file does not exist. Check the name of your index file and try again or create a new index file.");
             } 
             this.raf = new RandomAccessFile(file, "rw");
             loadHeader();
