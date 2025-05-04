@@ -26,3 +26,4 @@ The `search` command also works as expected. It returns the right result from th
 The `load` command is successful. I tested it by searching for a value from the input CSV file and it returns the correct result.
 The `print` command is successful.
 The `extract` command is successful. New output CSV files are created as expected. And they are remain unmodified.
+The whole implementation of B-tree is like implementing a regular tree data structure with root and nodes and all the operations involving manipulating a tree.

@@ -267,7 +267,7 @@ public class BTreeIndex {
         printRecursive(rootBlockId);
     }
     
-    // helper method for printing the b-tree recursively
+    // helper method for printing the b-tree recursively (in order)
     private void printRecursive(long blockId) throws IOException {
         BTreeNode node = loadNode(blockId);
         for (int i = 0; i < node.numKeys; i++) {
