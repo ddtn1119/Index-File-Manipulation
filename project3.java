@@ -54,6 +54,7 @@ public class project3 {
         } 
         catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
